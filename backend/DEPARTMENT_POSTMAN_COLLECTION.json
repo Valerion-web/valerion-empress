@@ -1,0 +1,200 @@
+{
+  "info": {
+    "_postman_id": "department-management-api",
+    "name": "Department Management API",
+    "description": "Complete Department Management API collection for HRMS backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Department",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Research\",\n  \"code\": \"RES\",\n  \"description\": \"Research department\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/departments",
+          "host": ["{{base_url}}"],
+          "path": ["departments"]
+        },
+        "description": "Create a new department (HR_ADMIN only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Departments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/departments?page=1&limit=10&sortBy=name&sortOrder=asc",
+          "host": ["{{base_url}}"],
+          "path": ["departments"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "sortBy", "value": "name" },
+            { "key": "sortOrder", "value": "asc" }
+          ]
+        },
+        "description": "Get all departments with pagination and sorting"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Department by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/departments/{{department_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["departments", "{{department_id}}"]
+        },
+        "description": "Get a specific department by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Departments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/departments/search?q=eng&page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["departments", "search"],
+          "query": [
+            { "key": "q", "value": "eng" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        },
+        "description": "Search departments by name, code, or description"
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Departments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/departments/filter?status=ACTIVE&page=1&limit=10&sortBy=name&sortOrder=asc",
+          "host": ["{{base_url}}"],
+          "path": ["departments", "filter"],
+          "query": [
+            { "key": "status", "value": "ACTIVE" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "sortBy", "value": "name" },
+            { "key": "sortOrder", "value": "asc" }
+          ]
+        },
+        "description": "Filter departments by status"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Department",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Updated research department\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/departments/{{department_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["departments", "{{department_id}}"]
+        },
+        "description": "Update a department (HR_ADMIN only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Department",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/departments/{{department_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["departments", "{{department_id}}"]
+        },
+        "description": "Soft delete a department (HR_ADMIN only)"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "department_id",
+      "value": ""
+    }
+  ]
+}

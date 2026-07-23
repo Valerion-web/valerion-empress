@@ -51,12 +51,27 @@ async function main() {
     });
   }
 
-  const departments = ['Engineering', 'Human Resources', 'Finance', 'Sales'];
-  for (const name of departments) {
+  const departments = [
+    { name: 'Engineering', code: 'ENG', description: 'Engineering' },
+    { name: 'Human Resources', code: 'HR', description: 'Human Resources' },
+    { name: 'Finance', code: 'FIN', description: 'Finance' },
+    { name: 'Sales', code: 'SAL', description: 'Sales' },
+  ];
+
+  for (const department of departments) {
     await prisma.department.upsert({
-      where: { name },
-      update: {},
-      create: { name, description: name },
+      where: { name: department.name },
+      update: {
+        code: department.code,
+        description: department.description,
+        status: 'ACTIVE',
+      },
+      create: {
+        name: department.name,
+        code: department.code,
+        description: department.description,
+        status: 'ACTIVE',
+      },
     });
   }
 

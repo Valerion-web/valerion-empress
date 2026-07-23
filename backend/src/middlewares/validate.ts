@@ -3,14 +3,21 @@ import { ZodSchema } from 'zod';
 import { buildApiResponse } from '../utils/api-response.js';
 
 export const validate = (schema: ZodSchema) => {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    const result = schema.safeParse({ body: req.body, query: req.query, params: req.params });
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse({
+      body: req.body ?? {},
+      query: req.query ?? {},
+      params: req.params ?? {},
+    });
+
     if (!result.success) {
-      return next(new Error(result.error.issues.map((issue) => issue.message).join(', ')));
+      const errors = result.error.issues.map((issue) => issue.message);
+      return res.status(400).json(buildApiResponse('Validation failed', null, errors));
     }
-    req.body = result.data.body;
-    req.query = result.data.query;
-    req.params = result.data.params;
+
+    req.body = result.data.body ?? req.body;
+    req.query = result.data.query ?? req.query;
+    req.params = result.data.params ?? req.params;
     next();
   };
 };

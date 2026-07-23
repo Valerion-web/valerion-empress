@@ -1,0 +1,252 @@
+{
+  "info": {
+    "_postman_id": "attendance-management-api",
+    "name": "Attendance Management API",
+    "description": "Complete Attendance Management API collection for HRMS backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"employee@valerion.local\",\n  \"password\": \"Admin@123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Check In Attendance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"location\": \"HQ\",\n  \"status\": \"PRESENT\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/attendance/check-in",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "check-in"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Check Out Attendance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"location\": \"HQ\",\n  \"status\": \"PRESENT\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/attendance/check-out/{{attendance_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "check-out", "{{attendance_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Attendance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance?page=1&limit=10&sortBy=date&sortOrder=desc",
+          "host": ["{{base_url}}"],
+          "path": ["attendance"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "sortBy", "value": "date" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Attendance By Employee",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance/employee/{{user_id}}?page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "employee", "{{user_id}}"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Attendance By Date",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance/date?date=2026-07-23&page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "date"],
+          "query": [
+            { "key": "date", "value": "2026-07-23" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Attendance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance/search?q=HQ&page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "search"],
+          "query": [
+            { "key": "q", "value": "HQ" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Attendance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance/filter?status=PRESENT&page=1&limit=10&sortBy=date&sortOrder=desc",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "filter"],
+          "query": [
+            { "key": "status", "value": "PRESENT" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "sortBy", "value": "date" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Monthly Attendance Report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/attendance/report?month=7&year=2026",
+          "host": ["{{base_url}}"],
+          "path": ["attendance", "report"],
+          "query": [
+            { "key": "month", "value": "7" },
+            { "key": "year", "value": "2026" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:4000/api"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "attendance_id",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    }
+  ]
+}
