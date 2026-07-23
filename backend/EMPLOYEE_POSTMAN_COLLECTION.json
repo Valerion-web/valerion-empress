@@ -1,0 +1,341 @@
+{
+  "info": {
+    "_postman_id": "employee-management-api",
+    "name": "Employee Management API",
+    "description": "Complete Employee Management API collection for HRMS backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": \"EMP001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@company.com\",\n  \"phone\": \"+1234567890\",\n  \"gender\": \"MALE\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"departmentId\": \"{{department_id}}\",\n  \"designationId\": \"{{designation_id}}\",\n  \"joiningDate\": \"2024-01-10\",\n  \"employmentType\": \"FULL_TIME\",\n  \"salary\": 75000,\n  \"profileImage\": \"https://example.com/image.jpg\",\n  \"address\": \"123 Main St, City, State\",\n  \"emergencyContact\": \"+9876543210\",\n  \"bloodGroup\": \"O+\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/employees",
+          "host": ["{{base_url}}"],
+          "path": ["employees"]
+        },
+        "description": "Create a new employee (SUPER_ADMIN or HR_ADMIN only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Employees",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees?page=1&limit=10&sortBy=firstName&sortOrder=asc",
+          "host": ["{{base_url}}"],
+          "path": ["employees"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "sortBy",
+              "value": "firstName"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        },
+        "description": "Get all employees with pagination and sorting"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Employee by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/{{employee_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "{{employee_id}}"]
+        },
+        "description": "Get a specific employee by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Employees",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/search?q=john&page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "john"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Search employees by name, email, or employee ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Employees",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/filter?departmentId=&status=ACTIVE&designationId=&employmentType=FULL_TIME&page=1&limit=10&sortBy=firstName&sortOrder=asc",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "filter"],
+          "query": [
+            {
+              "key": "departmentId",
+              "value": ""
+            },
+            {
+              "key": "status",
+              "value": "ACTIVE"
+            },
+            {
+              "key": "designationId",
+              "value": ""
+            },
+            {
+              "key": "employmentType",
+              "value": "FULL_TIME"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "sortBy",
+              "value": "firstName"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        },
+        "description": "Filter employees by various criteria"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Employees by Department",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/department/{{department_id}}?page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "department", "{{department_id}}"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Get all employees from a specific department"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Employees by Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/status/ACTIVE?page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "status", "ACTIVE"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Get employees with a specific status"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Total Employee Count",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/count",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "count"]
+        },
+        "description": "Get total number of employees"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Employee",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone\": \"+1987654321\",\n  \"status\": \"INACTIVE\",\n  \"address\": \"456 Oak Ave, New City\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/employees/{{employee_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "{{employee_id}}"]
+        },
+        "description": "Update employee details (SUPER_ADMIN or HR_ADMIN only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Employee",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/employees/{{employee_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["employees", "{{employee_id}}"]
+        },
+        "description": "Delete an employee (SUPER_ADMIN or HR_ADMIN only)"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:4000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "employee_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "department_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "designation_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

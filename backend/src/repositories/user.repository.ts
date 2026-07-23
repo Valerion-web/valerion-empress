@@ -6,6 +6,10 @@ export class UserRepository extends BaseRepository<any> {
     super('user');
   }
 
+  async findById(id: string) {
+    return prisma.user.findUnique({ where: { id } });
+  }
+
   async findByEmail(email: string) {
     return prisma.user.findUnique({ where: { email } });
   }
@@ -22,7 +26,21 @@ export class UserRepository extends BaseRepository<any> {
     });
   }
 
+  async createUser(data: {
+    email: string;
+    passwordHash: string;
+    firstName: string;
+    lastName: string;
+    roleId: string;
+  }) {
+    return prisma.user.create({ data });
+  }
+
   async createEmployee(data: any) {
     return prisma.user.create({ data });
+  }
+
+  async updateUser(id: string, data: any) {
+    return prisma.user.update({ where: { id }, data });
   }
 }
