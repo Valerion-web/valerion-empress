@@ -1,0 +1,8 @@
+{
+  "info": { "name": "Notification API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "Send Notification", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": { "raw": "{{API_URL}}/notifications", "host": ["{{API_URL}}"], "path": ["notifications"] }, "body": { "mode": "raw", "raw": "{ \"userId\": \"<employeeId>\", \"title\": \"Test\", \"body\": \"Hello\" }" } } },
+    { "name": "Broadcast", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": { "raw": "{{API_URL}}/notifications", "host": ["{{API_URL}}"], "path": ["notifications"] }, "body": { "mode": "raw", "raw": "{ \"broadcast\": true, \"title\": \"Announcement\", \"body\": \"Company update\" }" } } },
+    { "name": "My Notifications", "request": { "method": "GET", "url": { "raw": "{{API_URL}}/notifications/my-notifications", "host": ["{{API_URL}}"], "path": ["notifications","my-notifications"] } } }
+  ]
+}
