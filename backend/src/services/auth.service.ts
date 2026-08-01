@@ -24,13 +24,14 @@ export class AuthService {
     // Hash password
     const passwordHash = await hashPassword(password);
 
-    // Create user
+    // Create user with active status for immediate access
     const user = await userRepository.createUser({
       email,
       passwordHash,
       firstName,
       lastName,
       roleId: employeeRole.id,
+      status: 'ACTIVE',
     });
 
     logger.info(`User registered: ${email}`);

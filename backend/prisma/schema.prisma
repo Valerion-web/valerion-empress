@@ -34,6 +34,15 @@ enum LeaveStatus {
   CANCELLED
 }
 
+enum LeaveType {
+  CASUAL
+  SICK
+  EARNED
+  MATERNITY
+  PATERNITY
+  UNPAID
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -43,10 +52,8 @@ enum AttendanceStatus {
 }
 
 enum PayrollStatus {
-  DRAFT
-  PROCESSING
+  PENDING
   PAID
-  HOLD
 }
 
 enum RecruitmentStatus {
@@ -84,6 +91,12 @@ enum ApprovalStatus {
   REJECTED
 }
 
+enum PerformanceStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+}
+
 enum AnnouncementAudience {
   ALL
   EMPLOYEES
@@ -103,6 +116,27 @@ enum EmploymentType {
 enum DepartmentStatus {
   ACTIVE
   INACTIVE
+}
+
+enum AssetStatus {
+  AVAILABLE
+  ASSIGNED
+  MAINTENANCE
+  RETIRED
+}
+
+enum AssetAllocationStatus {
+  ALLOCATED
+  RETURNED
+}
+
+enum AssetHistoryAction {
+  CREATED
+  UPDATED
+  ASSIGNED
+  RETURNED
+  STATUS_CHANGED
+  DELETED
 }
 
 enum EmployeeStatus {
@@ -144,7 +178,8 @@ model User {
   leaveBalances   LeaveBalance[]
   payrolls        Payroll[]
   salaries        Salary[]
-  performances    Performance[]
+  performances    Performance[]   @relation("PerformanceEmployee")
+  reviewedPerformances Performance[] @relation("PerformanceReviewer")
   goals           Goal[]
   reviewRequests  Review[]         @relation("ReviewUser")
   reviewActions   Review[]         @relation("ReviewReviewer")
@@ -161,6 +196,7 @@ model User {
   trainings       Training[]
   certificates    Certificate[]
   assetAllocations AssetAllocation[]
+  assetHistory    AssetHistory[]
   documents       Document[]
   calendarEvents  CalendarEvent[]
   emailVerifications EmailVerification[]
@@ -308,14 +344,16 @@ model Attendance {
 model Leave {
   id           String       @id @default(uuid())
   userId       String
-  type         String
+  leaveType    LeaveType
   startDate    DateTime
   endDate      DateTime
-  days         Int
+  totalDays    Int
   reason       String
   status       LeaveStatus  @default(PENDING)
   approvedById String?
-  comments     String?
+  approvedAt   DateTime?
+  remarks      String?
+  deletedAt    DateTime?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -341,17 +379,19 @@ model LeaveBalance {
 }
 
 model Payroll {
-  id          String         @id @default(uuid())
-  userId      String
-  month       Int
-  year        Int
-  grossSalary Float
-  deductions  Float         @default(0)
-  netSalary   Float
-  status      PayrollStatus @default(DRAFT)
-  payslipUrl  String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id            String         @id @default(uuid())
+  userId        String
+  basicSalary   Float
+  allowances    Float          @default(0)
+  deductions    Float          @default(0)
+  bonus         Float          @default(0)
+  netSalary     Float
+  month         Int
+  year          Int
+  paymentStatus PayrollStatus  @default(PENDING)
+  paymentDate   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -375,17 +415,23 @@ model Salary {
 }
 
 model Performance {
-  id         String   @id @default(uuid())
-  userId     String
-  period     String
-  score      Float
-  rating     String
-  managerId  String?
-  summary    String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String            @id @default(uuid())
+  employeeId   String
+  reviewerId   String
+  reviewPeriod String
+  reviewDate   DateTime
+  rating       Int
+  goals        String
+  achievements String
+  strengths    String
+  improvements String
+  comments     String
+  status       PerformanceStatus @default(DRAFT)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employee User @relation("PerformanceEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User @relation("PerformanceReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
 }
 
 model Goal {
@@ -548,13 +594,23 @@ model Asset {
   name           String
   type           String
   serialNumber   String?  @unique
-  status         String   @default("AVAILABLE")
+  assetTag       String?  @unique
+  categoryId     String?
+  status         AssetStatus @default(AVAILABLE)
+  description    String?
+  purchasePrice  Float?
   purchaseDate   DateTime?
   warrantyUntil  DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  category    AssetCategory? @relation(fields: [categoryId], references: [id])
   allocations AssetAllocation[]
+  history     AssetHistory[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([name])
 }
 
 model AssetAllocation {
@@ -563,12 +619,42 @@ model AssetAllocation {
   userId       String
   allocatedAt  DateTime @default(now())
   returnedAt   DateTime?
-  status       String   @default("ALLOCATED")
+  status       AssetAllocationStatus @default(ALLOCATED)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([assetId, status])
+  @@index([userId, status])
+}
+
+model AssetCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assets Asset[]
+}
+
+model AssetHistory {
+  id          String            @id @default(uuid())
+  assetId     String
+  action      AssetHistoryAction
+  fromStatus  AssetStatus?
+  toStatus    AssetStatus?
+  userId      String?
+  notes       String?
+  createdAt   DateTime          @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([assetId, createdAt])
+  @@index([userId, createdAt])
 }
 
 model Document {

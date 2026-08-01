@@ -1,0 +1,27 @@
+{
+  "info": {
+    "name": "Valerion HRMS - Asset Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000/api" },
+    { "key": "token", "value": "" },
+    { "key": "assetId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "employeeId", "value": "" }
+  ],
+  "item": [
+    { "name": "List assets", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets?page=1&limit=10" } },
+    { "name": "Search and filter assets", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets?q=laptop&status=AVAILABLE&categoryId={{categoryId}}&page=1&limit=10" } },
+    { "name": "Create asset", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Dell Latitude 7440\",\n  \"type\": \"LAPTOP\",\n  \"assetTag\": \"AST-0001\",\n  \"serialNumber\": \"SN-0001\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"purchasePrice\": 1200,\n  \"status\": \"AVAILABLE\"\n}" }, "url": "{{baseUrl}}/assets" } },
+    { "name": "Get asset", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets/{{assetId}}" } },
+    { "name": "Update asset", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated asset description\",\n  \"status\": \"MAINTENANCE\"\n}" }, "url": "{{baseUrl}}/assets/{{assetId}}" } },
+    { "name": "Assign asset", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"{{employeeId}}\",\n  \"notes\": \"Issued to employee\"\n}" }, "url": "{{baseUrl}}/assets/{{assetId}}/assign" } },
+    { "name": "Return asset", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"notes\": \"Returned in good condition\"\n}" }, "url": "{{baseUrl}}/assets/{{assetId}}/return" } },
+    { "name": "Asset history", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets/{{assetId}}/history?page=1&limit=20" } },
+    { "name": "My assets", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets/my-assets?page=1&limit=10" } },
+    { "name": "List categories", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets/categories?page=1&limit=10" } },
+    { "name": "Create category", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"IT Equipment\",\n  \"description\": \"Computers and peripherals\"\n}" }, "url": "{{baseUrl}}/assets/categories" } },
+    { "name": "Retire asset", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/assets/{{assetId}}" } }
+  ]
+}

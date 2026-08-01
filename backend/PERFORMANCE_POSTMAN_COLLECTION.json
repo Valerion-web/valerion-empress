@@ -1,0 +1,30 @@
+{
+  "info": {
+    "name": "Valerion HRMS - Performance Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000/api" },
+    { "key": "token", "value": "" },
+    { "key": "performanceId", "value": "" },
+    { "key": "employeeId", "value": "" },
+    { "key": "reviewerId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create performance review",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/performance",
+        "body": { "mode": "raw", "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"reviewerId\": \"{{reviewerId}}\",\n  \"reviewPeriod\": \"2026 H1\",\n  \"reviewDate\": \"2026-07-23T00:00:00.000Z\",\n  \"rating\": 4,\n  \"goals\": \"Deliver quarterly objectives\",\n  \"achievements\": \"Completed planned milestones\",\n  \"strengths\": \"Clear communication and ownership\",\n  \"improvements\": \"Improve estimation accuracy\",\n  \"comments\": \"Strong progress during the review period\",\n  \"status\": \"DRAFT\"\n}" }
+      }
+    },
+    { "name": "List performance reviews", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/performance?page=1&limit=10&status=DRAFT" } },
+    { "name": "Get performance review", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/performance/{{performanceId}}" } },
+    { "name": "Update performance review", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "url": "{{baseUrl}}/performance/{{performanceId}}", "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"status\": \"SUBMITTED\"\n}" } } },
+    { "name": "Delete performance review", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/performance/{{performanceId}}" } },
+    { "name": "Reviews by employee", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/performance/employee/{{employeeId}}?page=1&limit=10" } },
+    { "name": "Reviews by reviewer", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/performance/reviewer/{{reviewerId}}?page=1&limit=10" } }
+  ]
+}

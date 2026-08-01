@@ -32,6 +32,7 @@ export class UserRepository extends BaseRepository<any> {
     firstName: string;
     lastName: string;
     roleId: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | 'PENDING';
   }) {
     return prisma.user.create({ data });
   }
