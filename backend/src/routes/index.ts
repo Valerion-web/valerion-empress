@@ -9,6 +9,7 @@ import performanceRoutes from './performance.routes.js';
 import recruitmentRoutes from './recruitment.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import assetRoutes from './asset.routes.js';
+import documentRoutes from './document.routes.js';
 import notificationRoutes from './notification.routes.js';
 
 const router = Router();
@@ -23,6 +24,7 @@ router.use('/performance', performanceRoutes);
 router.use('/recruitment', recruitmentRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/assets', assetRoutes);
+router.use('/documents', documentRoutes);
 router.use('/notifications', notificationRoutes);
 
 export default router;

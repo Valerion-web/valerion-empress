@@ -1,0 +1,7 @@
+{
+  "info": { "name": "Document API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "Upload Document", "request": { "method": "POST", "header": [], "url": { "raw": "{{API_URL}}/documents", "host": ["{{API_URL}}"], "path": ["documents"] }, "body": { "mode": "formdata", "formdata": [ { "key":"file", "type":"file", "src":"" }, { "key":"documentName", "value":"ID Card" }, { "key":"documentType", "value":"ID" } ] } } },
+    { "name": "Get Employee Documents", "request": { "method": "GET", "url": { "raw": "{{API_URL}}/documents/employee/<employeeId>", "host": ["{{API_URL}}"], "path": ["documents","employee","<employeeId>"] } } }
+  ]
+}
