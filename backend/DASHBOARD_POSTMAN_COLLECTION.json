@@ -1,0 +1,7 @@
+{
+  "info": { "name": "Dashboard API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "Overview", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{HR_TOKEN}}" }], "url": { "raw": "{{API_URL}}/dashboard/overview" } } },
+    { "name": "Employees", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{HR_TOKEN}}" }], "url": { "raw": "{{API_URL}}/dashboard/employees?page=1&limit=10" } } }
+  ]
+}

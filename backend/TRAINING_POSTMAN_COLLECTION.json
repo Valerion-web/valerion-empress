@@ -1,0 +1,6 @@
+{
+  "info": { "name": "Training API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "Create Training", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": { "raw": "{{API_URL}}/trainings" }, "body": { "mode": "raw", "raw": "{ \"title\": \"Safety\", \"description\": \"Safety training\" }" } } }
+  ]
+}

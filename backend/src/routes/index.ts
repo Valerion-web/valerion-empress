@@ -11,6 +11,8 @@ import dashboardRoutes from './dashboard.routes.js';
 import assetRoutes from './asset.routes.js';
 import documentRoutes from './document.routes.js';
 import notificationRoutes from './notification.routes.js';
+import trainingRoutes from './training.routes.js';
+import reportRoutes from './report.routes.js';
 
 const router = Router();
 
@@ -26,5 +28,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/assets', assetRoutes);
 router.use('/documents', documentRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/trainings', trainingRoutes);
+router.use('/reports', reportRoutes);
 
 export default router;

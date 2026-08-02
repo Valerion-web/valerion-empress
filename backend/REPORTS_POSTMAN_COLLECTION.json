@@ -1,0 +1,7 @@
+{
+  "info": { "name": "Reports API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "Employees Report", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{HR_TOKEN}}" }], "url": { "raw": "{{API_URL}}/reports/employees?page=1&limit=10" } } },
+    { "name": "Employees Export CSV", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{HR_TOKEN}}" }], "url": { "raw": "{{API_URL}}/reports/employees/export/csv" } } }
+  ]
+}
