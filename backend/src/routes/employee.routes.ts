@@ -10,9 +10,17 @@ import {
   getEmployeesByDepartment,
   getEmployeesByStatus,
   getTotalEmployeeCount,
+  getMyDashboard,
+  getMyProfile,
+  updateMyProfile,
+  uploadMyPhoto,
+  uploadMyDocument,
+  changeMyPassword,
+  getMyNotifications,
 } from '../controllers/employee.controller.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 import { validate } from '../middlewares/validate.js';
+import { upload } from '../config/multer.js';
 import {
   createEmployeeSchema,
   updateEmployeeSchema,
@@ -25,6 +33,14 @@ import {
 } from '../validators/employee.validator.js';
 
 const router = Router();
+
+router.get('/me/dashboard', authenticate, getMyDashboard);
+router.get('/me/profile', authenticate, getMyProfile);
+router.put('/me', authenticate, updateMyProfile);
+router.post('/me/photo', authenticate, upload.single('file'), uploadMyPhoto);
+router.post('/me/documents', authenticate, upload.single('file'), uploadMyDocument);
+router.post('/me/password', authenticate, changeMyPassword);
+router.get('/me/notifications', authenticate, getMyNotifications);
 
 /**
  * Create Employee

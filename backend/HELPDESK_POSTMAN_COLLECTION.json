@@ -1,0 +1,32 @@
+{
+  "info": {
+    "name": "Valerion HR Helpdesk API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Ticket",
+      "request": { "method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Laptop issue\",\n  \"description\": \"Need a replacement device\",\n  \"category\": \"IT\",\n  \"priority\": \"HIGH\"\n}" }, "url": { "raw": "{{baseUrl}}/helpdesk", "host": ["{{baseUrl}}"] } }
+    },
+    {
+      "name": "List Tickets",
+      "request": { "method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": { "raw": "{{baseUrl}}/helpdesk?page=1&limit=10", "host": ["{{baseUrl}}"] } }
+    },
+    {
+      "name": "Get Ticket",
+      "request": { "method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": { "raw": "{{baseUrl}}/helpdesk/:id", "host": ["{{baseUrl}}"] } }
+    },
+    {
+      "name": "Update Ticket",
+      "request": { "method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"priority\": \"URGENT\"\n}" }, "url": { "raw": "{{baseUrl}}/helpdesk/:id", "host": ["{{baseUrl}}"] } }
+    },
+    {
+      "name": "Add Comment",
+      "request": { "method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "body": { "mode": "raw", "raw": "{\n  \"message\": \"Please update the ticket status\"\n}" }, "url": { "raw": "{{baseUrl}}/helpdesk/:id/comments", "host": ["{{baseUrl}}"] } }
+    },
+    {
+      "name": "Dashboard Stats",
+      "request": { "method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": { "raw": "{{baseUrl}}/helpdesk/stats", "host": ["{{baseUrl}}"] } }
+    }
+  ]
+}

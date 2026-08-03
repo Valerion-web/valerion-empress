@@ -1,19 +1,26 @@
 import { prisma } from '../config/prisma.js';
 import { Prisma } from '@prisma/client';
 
+const userSelect = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+} as const;
+
 export class DocumentRepository {
   async create(data: Prisma.DocumentCreateInput) {
-    return prisma.document.create({ data });
+    return prisma.document.create({ data, include: { user: { select: userSelect } } });
   }
 
   async findById(id: string) {
-    return prisma.document.findUnique({ where: { id } });
+    return prisma.document.findUnique({ where: { id }, include: { user: { select: userSelect } } });
   }
 
   async list(where: Prisma.DocumentWhereInput, page: number, limit: number) {
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
-      prisma.document.findMany({ where, skip, take: limit, orderBy: { uploadedAt: 'desc' } }),
+      prisma.document.findMany({ where, skip, take: limit, orderBy: { uploadedAt: 'desc' }, include: { user: { select: userSelect } } }),
       prisma.document.count({ where }),
     ]);
     return { items, total, page, limit };
@@ -23,7 +30,7 @@ export class DocumentRepository {
     const skip = (page - 1) * limit;
     const where = { userId: employeeId } as Prisma.DocumentWhereInput;
     const [items, total] = await Promise.all([
-      prisma.document.findMany({ where, skip, take: limit, orderBy: { uploadedAt: 'desc' } }),
+      prisma.document.findMany({ where, skip, take: limit, orderBy: { uploadedAt: 'desc' }, include: { user: { select: userSelect } } }),
       prisma.document.count({ where }),
     ]);
     return { items, total, page, limit };

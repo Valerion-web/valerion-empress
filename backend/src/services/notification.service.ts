@@ -2,15 +2,14 @@ import { notificationRepository } from '../repositories/notification.repository.
 import { Prisma } from '@prisma/client';
 
 export class NotificationService {
-  async sendToEmployee(userId: string, title: string, body: string, actorId?: string) {
-    const data: Prisma.NotificationCreateInput = { userId, title, body } as any;
+  async sendToEmployee(userId: string, title: string, body: string, type = 'INFO', metadata?: Record<string, unknown>) {
+    const data: Prisma.NotificationCreateInput = { userId, title, body, type, metadata: metadata ? (metadata as any) : undefined } as any;
     return notificationRepository.create(data);
   }
 
-  async broadcastToAll(title: string, body: string) {
-    // createMany expects plain objects matching DB columns
+  async broadcastToAll(title: string, body: string, type = 'INFO', metadata?: Record<string, unknown>) {
     const users = await (await import('../config/prisma.js')).prisma.user.findMany({ select: { id: true } });
-    const rows = users.map((u: any) => ({ userId: u.id, title, body, createdAt: new Date(), updatedAt: new Date() }));
+    const rows = users.map((u: any) => ({ userId: u.id, title, body, type, metadata: metadata ? (metadata as any) : undefined, createdAt: new Date(), updatedAt: new Date() }));
     return notificationRepository.createBulk(rows as any[]);
   }
 
@@ -36,6 +35,17 @@ export class NotificationService {
     if (!n) throw new Error('Notification not found');
     if (n.userId !== actorId) throw new Error('Forbidden: cannot mark others notification');
     return notificationRepository.markRead(id);
+  }
+
+  async markUnread(id: string, actorId: string) {
+    const n = await notificationRepository.findById(id);
+    if (!n) throw new Error('Notification not found');
+    if (n.userId !== actorId) throw new Error('Forbidden: cannot mark others notification');
+    return notificationRepository.markUnread(id);
+  }
+
+  async markAllRead(userId: string) {
+    return notificationRepository.markAllRead(userId);
   }
 
   async delete(id: string, actorId: string) {

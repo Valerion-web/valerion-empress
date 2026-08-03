@@ -97,6 +97,42 @@ enum PerformanceStatus {
   APPROVED
 }
 
+enum PerformanceCycleStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum PerformanceGoalStatus {
+  ACTIVE
+  ACHIEVED
+  MISSED
+}
+
+enum PerformanceKpiStatus {
+  ACTIVE
+  ACHIEVED
+  MISSED
+}
+
+enum SelfAssessmentStatus {
+  DRAFT
+  SUBMITTED
+}
+
+enum TrainingStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TrainingCompletionStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
 enum AnnouncementAudience {
   ALL
   EMPLOYEES
@@ -145,6 +181,13 @@ enum EmployeeStatus {
   RESIGNED
 }
 
+enum HolidayType {
+  NATIONAL
+  REGIONAL
+  COMPANY
+  OPTIONAL
+}
+
 model User {
   id            String     @id @default(uuid())
   email         String     @unique
@@ -186,8 +229,9 @@ model User {
   recruitment          Recruitment[]
   jobApplications      Candidate[]          @relation("CandidateUser")
   interviews           Interview[]          @relation("InterviewInterviewer")
-  tickets              HelpdeskTicket[]     @relation("TicketUser")
+  helpdeskTickets      HelpdeskTicket[]     @relation("TicketEmployee")
   assignedTickets      HelpdeskTicket[]     @relation("TicketAssignee")
+  ticketComments       HelpdeskTicketComment[]
   notifications        Notification[]
   auditLogs            AuditLog[]
   approvals            Approval[]           @relation("ApprovalRequestedBy")
@@ -205,6 +249,12 @@ model User {
   createdAnnouncements Announcement[]       @relation("AnnouncementCreatedBy")
   approvedLeaves       Leave[]              @relation("LeaveApprover")
   trainingAssignments  TrainingAssignment[]
+  performanceCycles     PerformanceCycle[]
+  performanceGoals      PerformanceGoal[]
+  performanceKpis       PerformanceKpi[]
+  selfAssessments       SelfAssessment[]
+  managerFeedbacks      ManagerFeedback[] @relation("ManagerFeedbackEmployee")
+  reviewerFeedbacks     ManagerFeedback[] @relation("ManagerFeedbackReviewer")
 
   @@index([email])
   @@index([roleId])
@@ -257,6 +307,7 @@ model Department {
   trainings    Training[]
   events       CalendarEvent[]
   recruitments Recruitment[]   @relation("RecruitmentDepartment")
+  holidays     Holiday[]
 }
 
 model Designation {
@@ -428,11 +479,104 @@ model Performance {
   improvements String
   comments     String
   status       PerformanceStatus @default(DRAFT)
+  cycleId      String?
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 
-  employee User @relation("PerformanceEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewer User @relation("PerformanceReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  employee User             @relation("PerformanceEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User             @relation("PerformanceReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  cycle    PerformanceCycle? @relation(fields: [cycleId], references: [id])
+}
+
+model PerformanceCycle {
+  id          String                @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  status      PerformanceCycleStatus @default(DRAFT)
+  createdById String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  createdBy       User?              @relation(fields: [createdById], references: [id])
+  reviews         Performance[]
+  goals           PerformanceGoal[]
+  kpis            PerformanceKpi[]
+  selfAssessments SelfAssessment[]
+  feedbacks       ManagerFeedback[]
+}
+
+model PerformanceGoal {
+  id           String               @id @default(uuid())
+  cycleId      String
+  employeeId   String
+  title        String
+  description  String?
+  targetValue  Float?
+  currentValue Float?
+  unit         String?
+  progress     Int                  @default(0)
+  dueDate      DateTime?
+  status       PerformanceGoalStatus @default(ACTIVE)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  cycle    PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employee User             @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model PerformanceKpi {
+  id           String              @id @default(uuid())
+  cycleId      String
+  employeeId   String
+  title        String
+  description  String?
+  targetValue  Float?
+  currentValue Float?
+  unit         String?
+  weight       Int                 @default(100)
+  achieved     Boolean             @default(false)
+  status       PerformanceKpiStatus @default(ACTIVE)
+  dueDate      DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  cycle    PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employee User             @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model SelfAssessment {
+  id           String               @id @default(uuid())
+  cycleId      String
+  employeeId   String
+  summary      String?
+  strengths    String?
+  improvements String?
+  rating       Int?
+  status       SelfAssessmentStatus @default(DRAFT)
+  submittedAt  DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  cycle    PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employee User             @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model ManagerFeedback {
+  id           String    @id @default(uuid())
+  cycleId      String
+  employeeId   String
+  reviewerId   String
+  feedback     String
+  rating       Int?
+  status       String    @default("SUBMITTED")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  cycle    PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employee User             @relation("ManagerFeedbackEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User             @relation("ManagerFeedbackReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
 }
 
 model Goal {
@@ -547,16 +691,17 @@ model OfferLetter {
 }
 
 model Training {
-  id           String    @id @default(uuid())
+  id           String          @id @default(uuid())
   title        String
   description  String?
+  category     String?
   departmentId String?
   trainer      String?
   startDate    DateTime?
   endDate      DateTime?
-  status       String    @default("PLANNED")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  status       TrainingStatus  @default(PLANNED)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   department          Department?          @relation(fields: [departmentId], references: [id])
   courses             Course[]
@@ -565,11 +710,18 @@ model Training {
 }
 
 model TrainingAssignment {
-  id               String   @id @default(uuid())
+  id               String                  @id @default(uuid())
   trainingId       String
   userId           String
-  completionStatus String   @default("PENDING")
-  assignedAt       DateTime @default(now())
+  assignedBy       String?
+  assignedDate     DateTime                @default(now())
+  completionStatus TrainingCompletionStatus @default(NOT_STARTED)
+  completionDate   DateTime?
+  score            Int?
+  certificateUrl   String?
+  remarks          String?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
 
   training Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -716,19 +868,32 @@ model Announcement {
 }
 
 model HelpdeskTicket {
-  id           String         @id @default(uuid())
-  userId       String
-  subject      String
+  id           String                  @id @default(uuid())
+  ticketNumber String                  @unique
+  employeeId   String
+  title        String
   description  String
-  priority     TicketPriority @default(MEDIUM)
-  status       TicketStatus   @default(OPEN)
-  category     String?
+  category     String
+  priority     TicketPriority          @default(MEDIUM)
+  status       TicketStatus            @default(OPEN)
   assignedToId String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
 
-  user       User  @relation("TicketUser", fields: [userId], references: [id], onDelete: Cascade)
-  assignedTo User? @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  employee    User                   @relation("TicketEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  assignedTo  User?                  @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  comments    HelpdeskTicketComment[]
+}
+
+model HelpdeskTicketComment {
+  id        String           @id @default(uuid())
+  ticketId  String
+  userId    String
+  message   String
+  createdAt DateTime         @default(now())
+
+  ticket    HelpdeskTicket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuditLog {
@@ -796,12 +961,17 @@ model Branch {
 }
 
 model Holiday {
-  id        String   @id @default(uuid())
-  name      String
-  date      DateTime
-  type      String   @default("PUBLIC")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String      @id @default(uuid())
+  name          String
+  description   String?
+  holidayDate   DateTime
+  holidayType   HolidayType @default(COMPANY)
+  departmentId  String?
+  isRecurring   Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  department Department? @relation(fields: [departmentId], references: [id])
 }
 
 model Shift {

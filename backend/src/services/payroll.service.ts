@@ -1,4 +1,5 @@
 import { payrollRepository } from '../repositories/payroll.repository.js';
+import { notificationService } from './notification.service.js';
 import { logger } from '../utils/logger.js';
 
 export class PayrollService {
@@ -32,6 +33,7 @@ export class PayrollService {
     });
 
     logger.info(`Created payroll for user ${data.userId} for ${data.month}/${data.year}`);
+    await notificationService.sendToEmployee(data.userId, 'Payroll generated', `Payroll for ${data.month}/${data.year} has been generated and is ready for review.`, 'INFO', { payrollId: payroll.id, month: data.month, year: data.year });
     return payroll;
   }
 

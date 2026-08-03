@@ -1,17 +1,27 @@
-# Notification Management Module
+# Notifications Center Implementation Summary
 
-Implemented a Notification Management module with API endpoints, validators, repository, service, controller, Postman collection and smoke tests.
+## Overview
+A complete Notifications Center module was added to the HR portal so users can receive and manage contextual alerts from the core HR workflows.
 
-Files added:
-- `src/repositories/notification.repository.ts`
-- `src/services/notification.service.ts`
-- `src/controllers/notification.controller.ts`
-- `src/routes/notification.routes.ts`
-- `src/validators/notification.validator.ts`
-- `notification-smoke-test.mjs`
-- `NOTIFICATION_POSTMAN_COLLECTION.json`
+## Backend
+- Added notification persistence through the existing Prisma Notification model.
+- Implemented notification endpoints for creation, listing, reading, unreading, bulk mark-as-read, and deletion.
+- Connected notifications to:
+  - Leave approval/rejection
+  - Payroll generation
+  - Training assignment
+  - Helpdesk ticket updates/assignment
+  - Recruitment interview scheduling
 
-Notes:
-- Uses existing `Notification` Prisma model (userId, title, body, readAt, metadata).
-- `POST /api/notifications` supports sending to a specific `userId` or broadcasting with `broadcast: true`.
-- Only `HR_ADMIN` and `SUPER_ADMIN` can create/broadcast notifications; authenticated users can view/mark/delete their own notifications.
+## Frontend
+- Added a notification bell in the shared top bar with an unread-count badge.
+- Added a notification dropdown with recent items and a quick link to the full center.
+- Added a full Notifications page with:
+  - unread/read state
+  - mark read/unread actions
+  - delete action
+  - bulk mark-all-read
+
+## Integration
+- Connected the UI to the authenticated backend notification API.
+- Hooked the module into the existing sidebar and app route tree.

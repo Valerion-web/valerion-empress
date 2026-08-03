@@ -38,6 +38,14 @@ export class NotificationRepository {
     return prisma.notification.update({ where: { id }, data: { readAt: new Date() } });
   }
 
+  async markUnread(id: string) {
+    return prisma.notification.update({ where: { id }, data: { readAt: null } });
+  }
+
+  async markAllRead(userId: string) {
+    return prisma.notification.updateMany({ where: { userId, readAt: null }, data: { readAt: new Date() } });
+  }
+
   async delete(id: string) {
     return prisma.notification.delete({ where: { id } });
   }

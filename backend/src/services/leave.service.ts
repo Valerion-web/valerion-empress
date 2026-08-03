@@ -1,7 +1,6 @@
 import { Prisma, LeaveType } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
-import { LeaveRepository } from '../repositories/leave.repository.js';
-import { logger } from '../utils/logger.js';
+import { LeaveRepository } from '../repositories/leave.repository.js';import { notificationService } from './notification.service.js';import { logger } from '../utils/logger.js';
 
 const leaveRepository = new LeaveRepository();
 
@@ -246,6 +245,7 @@ export class LeaveService {
     }
 
     const leave = await leaveRepository.approve(id, approvedById, remarks);
+    await notificationService.sendToEmployee(existing.userId, 'Leave request approved', `Your leave request has been approved${remarks ? `: ${remarks}` : '.'}`, 'SUCCESS', { leaveId: leave.id, status: 'APPROVED' });
     return leave;
   }
 
@@ -260,6 +260,7 @@ export class LeaveService {
     }
 
     const leave = await leaveRepository.reject(id, approvedById, remarks);
+    await notificationService.sendToEmployee(existing.userId, 'Leave request rejected', `Your leave request has been rejected${remarks ? `: ${remarks}` : '.'}`, 'WARNING', { leaveId: leave.id, status: 'REJECTED' });
     return leave;
   }
 
