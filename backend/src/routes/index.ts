@@ -14,9 +14,13 @@ import documentRoutes from './document.routes.js';
 import notificationRoutes from './notification.routes.js';
 import trainingRoutes from './training.routes.js';
 import reportRoutes from './report.routes.js';
+import reportsRoutes from './reports.routes.js';
 import helpdeskRoutes from './helpdesk.routes.js';
 import holidayRoutes from './holiday.routes.js';
 import roleRoutes from './role.routes.js';
+import onboardingRoutes from './onboarding.routes.js';
+import settingsRoutes from './settings.routes.js';
+import auditRoutes from './audit.routes.js';
 
 const router = Router();
 
@@ -35,8 +39,12 @@ router.use('/documents', documentRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/trainings', trainingRoutes);
 router.use('/reports', reportRoutes);
+router.use('/reports-v2', reportsRoutes);
 router.use('/helpdesk', helpdeskRoutes);
 router.use('/holidays', holidayRoutes);
 router.use('/roles', roleRoutes);
+router.use('/onboarding', onboardingRoutes);
+router.use('/settings', settingsRoutes);
+router.use('/audit', auditRoutes);
 
 export default router;

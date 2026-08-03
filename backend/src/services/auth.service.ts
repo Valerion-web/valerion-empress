@@ -4,6 +4,7 @@ import { hashPassword, comparePassword } from '../utils/password.js';
 import { signAccessToken, signRefreshToken } from '../utils/jwt.js';
 import { logger } from '../utils/logger.js';
 import crypto from 'crypto';
+import { auditService } from './audit.service.js';
 
 const userRepository = new UserRepository();
 
@@ -72,6 +73,14 @@ export class AuthService {
     });
 
     await userRepository.updateUser(user.id, { refreshToken, lastLoginAt: new Date() });
+    await auditService.recordAction({
+      userId: user.id,
+      action: 'LOGIN',
+      module: 'AUTH',
+      entity: 'USER',
+      entityId: user.id,
+      metadata: { email: user.email, ip: 'unknown' },
+    });
     logger.info(`User logged in: ${user.email}`);
 
     return {
@@ -88,6 +97,14 @@ export class AuthService {
 
   async logout(userId: string) {
     await userRepository.updateUser(userId, { refreshToken: null });
+    await auditService.recordAction({
+      userId,
+      action: 'LOGOUT',
+      module: 'AUTH',
+      entity: 'USER',
+      entityId: userId,
+      metadata: { event: 'logout' },
+    });
     logger.info(`User logged out: ${userId}`);
   }
 

@@ -3,6 +3,7 @@ CREATE TYPE "PerformanceStatus" AS ENUM ('DRAFT', 'SUBMITTED', 'APPROVED');
 
 -- Preserve the legacy table while replacing its incompatible shape.
 ALTER TABLE IF EXISTS "Performance" RENAME TO "PerformanceLegacy";
+ALTER TABLE IF EXISTS "PerformanceLegacy" RENAME CONSTRAINT "Performance_pkey" TO "PerformanceLegacy_pkey";
 
 -- CreateTable
 CREATE TABLE "Performance" (

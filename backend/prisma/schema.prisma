@@ -255,6 +255,9 @@ model User {
   selfAssessments       SelfAssessment[]
   managerFeedbacks      ManagerFeedback[] @relation("ManagerFeedbackEmployee")
   reviewerFeedbacks     ManagerFeedback[] @relation("ManagerFeedbackReviewer")
+  onboardingRecords     OnboardingRecord[] @relation("OnboardingEmployee")
+  managerOnboarding     OnboardingRecord[] @relation("OnboardingManager")
+  offboardingRecords    OffboardingRecord[] @relation("OffboardingEmployee")
 
   @@index([email])
   @@index([roleId])
@@ -934,6 +937,89 @@ model Approval {
   workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   requestedBy User     @relation("ApprovalRequestedBy", fields: [requestedById], references: [id], onDelete: Cascade)
   approver    User?    @relation("ApprovalApprover", fields: [approverId], references: [id])
+}
+
+model OnboardingRecord {
+  id                   String   @id @default(uuid())
+  employeeId           String
+  managerId            String?
+  role                 String
+  startDate            DateTime
+  stage                String   @default("DRAFT")
+  approvalStatus       String   @default("PENDING")
+  completionPercentage Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  employee User? @relation("OnboardingEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  manager  User? @relation("OnboardingManager", fields: [managerId], references: [id])
+  tasks    OnboardingTask[]
+  documents OnboardingDocument[]
+
+  @@index([employeeId])
+  @@index([managerId])
+}
+
+model OnboardingTask {
+  id                 String   @id @default(uuid())
+  onboardingRecordId String
+  title              String
+  owner              String
+  dueDate            DateTime?
+  status             String   @default("PENDING")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  onboardingRecord OnboardingRecord @relation(fields: [onboardingRecordId], references: [id], onDelete: Cascade)
+
+  @@index([onboardingRecordId])
+}
+
+model OnboardingDocument {
+  id                 String   @id @default(uuid())
+  onboardingRecordId String
+  fileName           String
+  category           String   @default("GENERAL")
+  uploadedAt         DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  onboardingRecord OnboardingRecord @relation(fields: [onboardingRecordId], references: [id], onDelete: Cascade)
+
+  @@index([onboardingRecordId])
+}
+
+model OffboardingRecord {
+  id                  String   @id @default(uuid())
+  employeeId          String
+  employeeName        String
+  resignationDate    DateTime
+  reason              String
+  status              String   @default("SUBMITTED")
+  exitInterview      String?
+  assetReturnStatus   String   @default("PENDING")
+  settlementAmount    Float    @default(0)
+  finalComments       String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  employee User? @relation("OffboardingEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  clearanceItems OffboardingChecklistItem[]
+
+  @@index([employeeId])
+}
+
+model OffboardingChecklistItem {
+  id                  String   @id @default(uuid())
+  offboardingRecordId String
+  name                String
+  status              String   @default("PENDING")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  offboardingRecord OffboardingRecord @relation(fields: [offboardingRecordId], references: [id], onDelete: Cascade)
+
+  @@index([offboardingRecordId])
 }
 
 model Settings {

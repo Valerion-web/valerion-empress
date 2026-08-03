@@ -14,7 +14,7 @@ CREATE TYPE "LeaveStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED
 CREATE TYPE "AttendanceStatus" AS ENUM ('PRESENT', 'ABSENT', 'LATE', 'HALF_DAY', 'LEAVE');
 
 -- CreateEnum
-CREATE TYPE "PayrollStatus" AS ENUM ('DRAFT', 'PROCESSING', 'PAID', 'HOLD');
+CREATE TYPE "PayrollStatus" AS ENUM ('DRAFT', 'PROCESSING', 'PAID', 'HOLD', 'PENDING');
 
 -- CreateEnum
 CREATE TYPE "RecruitmentStatus" AS ENUM ('OPEN', 'CLOSED', 'FILLED');
